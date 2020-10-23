@@ -1,12 +1,7 @@
 import React from "react";
 
 import { ListItemTypes } from "../interfaces/data";
-import {
-    Theme,
-    createStyles,
-    makeStyles,
-    withStyles,
-} from "@material-ui/core/styles";
+import { createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
 import Accordion from "@material-ui/core/Accordion";
 import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
@@ -17,13 +12,14 @@ import BillBoardsItem from "./BillBoardsItem";
 
 interface Props {
     billBoards: BillBoards[];
+    setGroup: (groupIndex: number) => void;
 }
 interface BillBoards {
     type: string;
     amount: number;
     items: ListItemTypes[];
 }
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             height: "100vh",
@@ -33,6 +29,17 @@ const useStyles = makeStyles((theme: Theme) =>
             position: "absolute",
             zIndex: 2,
             width: "350px",
+        },
+        button: {
+            backgroundColor: "#2196f3",
+            border: "none",
+            borderRadius: "4px",
+            color: "#fff",
+            cursor: "pointer",
+            display: "block",
+            height: "30px",
+            lineHeight: "30px",
+            margin: "15px auto",
         },
     })
 );
@@ -49,7 +56,12 @@ const BillBoardsList = (props: Props) => {
     return (
         <div className={classes.root}>
             {props.billBoards.map((item: BillBoards, index: number) => (
-                <Accordion key={index}>
+                <Accordion
+                    key={index}
+                    onChange={(event: any, expanded: boolean) => {
+                        if (expanded) props.setGroup(index);
+                    }}
+                >
                     <CssAccordionSummary
                         expandIcon={<ArrowForwardRoundedIcon />}
                         aria-controls="panel1a-content"
@@ -60,11 +72,16 @@ const BillBoardsList = (props: Props) => {
                         </Typography>
                     </CssAccordionSummary>
                     <AccordionDetails>
-                        <ul>
-                            {item.items.map((item: ListItemTypes) => (
-                                <BillBoardsItem item={item} key={item.id} />
-                            ))}
-                        </ul>
+                        <div>
+                            <ul>
+                                {item.items.map((item: ListItemTypes) => (
+                                    <BillBoardsItem item={item} key={item.id} />
+                                ))}
+                            </ul>
+                            <button className={classes.button} type="button">
+                                Заказать этот блок
+                            </button>
+                        </div>
                     </AccordionDetails>
                 </Accordion>
             ))}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 
 import { connect } from "react-redux";
@@ -24,6 +24,7 @@ interface Props {
 }
 
 const Main: React.FC<Props> = ({ list }) => {
+    const [activeGroup, setActiveGroup] = useState(0);
     const classes = useStyles();
     let billBoards = [];
     for (let prop in list.list) {
@@ -39,14 +40,23 @@ const Main: React.FC<Props> = ({ list }) => {
         };
         billBoards.push(billBoard);
     }
+    const setGroup = (groupIndex: number) => {
+        setActiveGroup(groupIndex);
+    };
     return (
         <>
             {list.is_loading ? (
                 <CircularProgress />
             ) : (
                 <div className={classes.container}>
-                    <BillBoardsList billBoards={billBoards}></BillBoardsList>
-                    <BillBoardsMap billBoards={billBoards} />
+                    <BillBoardsList
+                        billBoards={billBoards}
+                        setGroup={setGroup}
+                    ></BillBoardsList>
+                    <BillBoardsMap
+                        billBoards={billBoards}
+                        activeGroup={activeGroup}
+                    />
                 </div>
             )}
         </>
