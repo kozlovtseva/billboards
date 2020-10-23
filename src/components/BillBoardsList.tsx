@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ListTypes, ListItemTypes } from "../interfaces/data";
+import { ListItemTypes } from "../interfaces/data";
 import {
     Theme,
     createStyles,
@@ -16,13 +16,23 @@ import ArrowForwardRoundedIcon from "@material-ui/icons/ArrowForwardRounded";
 import BillBoardsItem from "./BillBoardsItem";
 
 interface Props {
-    list: ListTypes;
+    billBoards: BillBoards[];
 }
-
+interface BillBoards {
+    type: string;
+    amount: number;
+    items: ListItemTypes[];
+}
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            width: "100%",
+            height: "100vh",
+            left: 0,
+            top: 0,
+            overflow: "scroll",
+            position: "absolute",
+            zIndex: 2,
+            width: "350px",
         },
     })
 );
@@ -36,42 +46,30 @@ const CssAccordionSummary = withStyles({
 
 const BillBoardsList = (props: Props) => {
     const classes = useStyles();
-    const makeList = (list: ListTypes | [] | undefined) => {
-        if (list) {
-            Object.entries(props.list).map(
-                (value: [string, ListItemTypes[]], index: number) => {
-                    let total = 0;
-                    for (let i = 0; i < value[1].length; i++) {
-                        total += value[1][i].count_stands;
-                    }
-                    return (
-                        <Accordion key={index}>
-                            <CssAccordionSummary
-                                expandIcon={<ArrowForwardRoundedIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                            >
-                                <Typography>
-                                    {value[0]} - {total}
-                                </Typography>
-                            </CssAccordionSummary>
-                            <AccordionDetails>
-                                <ul>
-                                    {value[1].map((item: ListItemTypes) => (
-                                        <BillBoardsItem item={item} />
-                                    ))}
-                                </ul>
-                            </AccordionDetails>
-                        </Accordion>
-                    );
-                }
-            );
-        } else {
-            return null;
-        }
-    };
-    const list = makeList(props.list);
-    return <div className={classes.root}>{list}</div>;
+    return (
+        <div className={classes.root}>
+            {props.billBoards.map((item: BillBoards, index: number) => (
+                <Accordion key={index}>
+                    <CssAccordionSummary
+                        expandIcon={<ArrowForwardRoundedIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                    >
+                        <Typography>
+                            {item.type} - {item.amount}
+                        </Typography>
+                    </CssAccordionSummary>
+                    <AccordionDetails>
+                        <ul>
+                            {item.items.map((item: ListItemTypes) => (
+                                <BillBoardsItem item={item} key={item.id} />
+                            ))}
+                        </ul>
+                    </AccordionDetails>
+                </Accordion>
+            ))}
+        </div>
+    );
 };
 
 export default BillBoardsList;
