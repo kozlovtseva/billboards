@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { ListItemTypes } from "../interfaces/data";
 import { createStyles, makeStyles, withStyles } from "@material-ui/core/styles";
@@ -53,12 +53,18 @@ const CssAccordionSummary = withStyles({
 
 const BillBoardsList = (props: Props) => {
     const classes = useStyles();
+    const [expanded, setExpanded] = useState(2);
+    const handleChange = (panel: number) => {
+        setExpanded(panel);
+    };
     return (
         <div className={classes.root}>
             {props.billBoards.map((item: BillBoards, index: number) => (
                 <Accordion
                     key={index}
+                    expanded={expanded === index}
                     onChange={(event: any, expanded: boolean) => {
+                        handleChange(index);
                         if (expanded) props.setGroup(index);
                     }}
                 >
